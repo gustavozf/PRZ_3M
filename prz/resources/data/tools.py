@@ -1,6 +1,7 @@
 import os
-from .data_io import DataIO
-from .data_search import DataSearch
+
+from prz.resources.data.io import DataIO
+from prz.resources.data.search import DataSearch
 
 
 class DataTools:
@@ -11,13 +12,14 @@ class DataTools:
             output_config={
                 'to_file': True,
                 'file_name': 'mapped_dataset.txt',
-                'path': DataIO.absPath('../../outputs/maps/'),
+                'path': './outputs/maps/',
             },):
-        DataIO.createDirIfNotExists(output_config['path'])
 
         found_files, _ = DataSearch.bfs(dpath, target_file_ext=target_file_ext)
 
         if (output_config['to_file']):
+            DataIO.createDirIfNotExists(output_config['path'])
+            
             with open(
                     output_config['path'] + output_config['file_name'], 'w',) as output_file:
 

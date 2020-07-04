@@ -1,5 +1,6 @@
 import os
-from ...definitions.strings import Strings
+
+from prz.definitions.strings import Strings
 
 
 class DataIO:

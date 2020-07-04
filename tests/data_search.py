@@ -1,5 +1,5 @@
-from src.resources.data.data_search import DataSearch
-from src.resources.data.data_io import DataIO
+from prz.resources.data.search import DataSearch
+from prz.resources.data.io import DataIO
 import pytest
 import os
 

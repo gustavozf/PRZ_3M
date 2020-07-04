@@ -1,6 +1,6 @@
-from ...definitions.strings import Strings
-from ...definitions.configs import Configs
-from data_io import DataIO
+from prz.definitions.strings import Strings
+from prz.definitions.configs import Configs
+from prz.resources.data.io import DataIO
 
 
 class DataSearch:
