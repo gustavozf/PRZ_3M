@@ -292,11 +292,9 @@ D:\Documents\Mestrado\Projeto\Bases\TW\4C\9\9_(c1+c2).JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\4C\8\8_c2.JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\4C\8\8_c1.JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\4C\8\8_(c1+c2).JPG
-D:\Documents\Mestrado\Projeto\Bases\TW\4C\7\Thumbs.db
 D:\Documents\Mestrado\Projeto\Bases\TW\4C\7\7_c2.JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\4C\7\7_c1.JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\4C\7\7_(c1+c2).JPG
-D:\Documents\Mestrado\Projeto\Bases\TW\4C\6\Thumbs.db
 D:\Documents\Mestrado\Projeto\Bases\TW\4C\6\6_c2.JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\4C\6\6_c1.JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\4C\6\6_(c1+c2).JPG
@@ -411,7 +409,6 @@ D:\Documents\Mestrado\Projeto\Bases\TW\3C\31\31_(c1+c2).JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\3C\30\30_c2.JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\3C\30\30_c1.JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\3C\30\30_(c1+c2).JPG
-D:\Documents\Mestrado\Projeto\Bases\TW\3C\3\Thumbs.db
 D:\Documents\Mestrado\Projeto\Bases\TW\3C\3\3_c2.JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\3C\3\3_c1.JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\3C\3\3_(c1+c2).JPG
@@ -574,7 +571,6 @@ D:\Documents\Mestrado\Projeto\Bases\TW\30TW\11\11_(c1+c2).JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\30TW\10\10_c2.JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\30TW\10\10_c1.JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\30TW\10\10_(c1+c2).JPG
-D:\Documents\Mestrado\Projeto\Bases\TW\30TW\1\Thumbs.db
 D:\Documents\Mestrado\Projeto\Bases\TW\30TW\1\1_c2.JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\30TW\1\1_c1.JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\30TW\1\1_(c1+c2).JPG
@@ -608,7 +604,6 @@ D:\Documents\Mestrado\Projeto\Bases\TW\2C\30\30_(c1+c2).JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\2C\3\3_c2.JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\2C\3\3_c1.JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\2C\3\3_(c1+c2).JPG
-D:\Documents\Mestrado\Projeto\Bases\TW\2C\29\Thumbs.db
 D:\Documents\Mestrado\Projeto\Bases\TW\2C\29\29_c2.JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\2C\29\29_c1.JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\2C\29\29_(c1+c2).JPG
@@ -744,7 +739,6 @@ D:\Documents\Mestrado\Projeto\Bases\TW\28TW\19\19_(c1+c2).JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\28TW\18\18_c2.JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\28TW\18\18_c1.JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\28TW\18\18_(c1+c2).JPG
-D:\Documents\Mestrado\Projeto\Bases\TW\28TW\17\Thumbs.db
 D:\Documents\Mestrado\Projeto\Bases\TW\28TW\17\17_c2.JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\28TW\17\17_c1.JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\28TW\17\17_(c1+c2).JPG
@@ -769,7 +763,6 @@ D:\Documents\Mestrado\Projeto\Bases\TW\28TW\11\11_(c1+c2).JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\28TW\10\10_c2.JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\28TW\10\10_c1.JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\28TW\10\10_(c1+c2).JPG
-D:\Documents\Mestrado\Projeto\Bases\TW\28TW\1\Thumbs.db
 D:\Documents\Mestrado\Projeto\Bases\TW\28TW\1\1_c2.JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\28TW\1\1_c1.JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\28TW\1\1_(c1+c2).JPG
@@ -788,7 +781,6 @@ D:\Documents\Mestrado\Projeto\Bases\TW\26TW\6\6_(c1+c2).JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\26TW\5\5_c2.JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\26TW\5\5_c1.JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\26TW\5\5_(c1+c2).JPG
-D:\Documents\Mestrado\Projeto\Bases\TW\26TW\4\Thumbs.db
 D:\Documents\Mestrado\Projeto\Bases\TW\26TW\4\4_c2.JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\26TW\4\4_c1.JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\26TW\4\4_(c1+c2).JPG
@@ -1041,7 +1033,6 @@ D:\Documents\Mestrado\Projeto\Bases\TW\23TW\17\17_(c1+c2).JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\23TW\16\16_c2.JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\23TW\16\16_c1.JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\23TW\16\16_(c1+c2).JPG
-D:\Documents\Mestrado\Projeto\Bases\TW\23TW\15\Thumbs.db
 D:\Documents\Mestrado\Projeto\Bases\TW\23TW\15\15_c2.JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\23TW\15\15_c1.JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\23TW\15\15_(c1+c2).JPG
@@ -1051,7 +1042,6 @@ D:\Documents\Mestrado\Projeto\Bases\TW\23TW\14\14_(c1+c2).JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\23TW\13\13_c2.JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\23TW\13\13_c1.JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\23TW\13\13_(c1+c2).JPG
-D:\Documents\Mestrado\Projeto\Bases\TW\23TW\12\Thumbs.db
 D:\Documents\Mestrado\Projeto\Bases\TW\23TW\12\12_c2.JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\23TW\12\12_c1.JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\23TW\12\12_(c1+c2).JPG
@@ -1217,7 +1207,6 @@ D:\Documents\Mestrado\Projeto\Bases\TW\1C\22\22_(c1+c2).JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\1C\21\21_c2.JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\1C\21\21_c1.JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\1C\21\21_(c1+c2).JPG
-D:\Documents\Mestrado\Projeto\Bases\TW\1C\20\Thumbs.db
 D:\Documents\Mestrado\Projeto\Bases\TW\1C\20\20_c2.JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\1C\20\20_c1.JPG
 D:\Documents\Mestrado\Projeto\Bases\TW\1C\20\20_(c1+c2).JPG

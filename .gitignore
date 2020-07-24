@@ -106,3 +106,4 @@ venv.bak/
 # datasets
 datasets/
 dev_tools/
+outputs/

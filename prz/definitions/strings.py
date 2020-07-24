@@ -8,3 +8,6 @@ class Strings:
 
     dirCreationFailed = 'Creation of the directory %s failed'
     dirRemoveFailed = 'Deletion  of the directory %s failed'
+
+    invalidParameter = 'Invalid parameter "%s"'
+    invalidParameterValue = 'Invalid value "%s" for the parameter "%s"'
