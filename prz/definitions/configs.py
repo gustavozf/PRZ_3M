@@ -1,4 +1,4 @@
 import platform
 
 class Configs:
-    dirSep = '\\' if platform.system() == 'Windows' else '/'
+    dir_sep = '\\' if platform.system() == 'Windows' else '/'

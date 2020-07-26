@@ -3,31 +3,32 @@ import numpy as np
 
 from prz.resources.data.io import DataIO
 from prz.definitions.strings import Strings
+from prz.definitions.configs import Configs
 
 
 class ImageSample:
     @staticmethod
-    def read(img_path, mode='COLOR'):
+    def read(img_path, mode='COLOR', as_rgb=False):
         cv_color = {
             'COLOR': cv2.IMREAD_COLOR,
             'GS': cv2.IMREAD_GRAYSCALE,
             'UNC': cv2.IMREAD_UNCHANGED,
         }
 
-        assert mode in cv_color.keys(), Strings.invalidParameterValue % (mode, 'mode')
+        assert mode in cv_color.keys(), Strings.invalid_parameter_value % (mode, 'mode')
 
         img = cv2.imread(img_path, cv_color[mode])
 
-        if (mode == 'COLOR'):
+        if (mode == 'COLOR' and as_rgb):
             img = ImageSample.cvt_color(img)
 
         return img
 
     @staticmethod
-    def write(img=np.array([]), out_path=''):
-        assert DataIO.pathExists(out_path), Strings.noPath
+    def write(img=np.array([]), out_path='./', file_name='out.png'):
+        assert DataIO.pathExists(out_path), Strings.no_path
 
-        return cv2.imwrite(out_path, img)
+        return cv2.imwrite(f'{out_path}{Configs.dir_sep}{file_name}', img)
 
     @staticmethod
     def cvt_color(img_src=np.array([]),

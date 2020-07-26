@@ -6,8 +6,8 @@ from prz.resources.data.io import DataIO
 class DataSearch:
     @staticmethod
     def bfs(fpath, target_file_ext=None):
-        assert DataIO.pathExists(fpath), Strings.noPath
-        assert DataIO.isDir(fpath), Strings.pathNotDir
+        assert DataIO.pathExists(fpath), Strings.no_path
+        assert DataIO.isDir(fpath), Strings.path_not_dir
 
         def check_file_ext(
             fname): return True if not target_file_ext else fname.endswith(target_file_ext)
