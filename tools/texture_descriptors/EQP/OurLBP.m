@@ -22,12 +22,13 @@ if (nargin > 4)
     THRESHOLD=varargin{2};
     LUOGO=varargin{4};
     neighbors=varargin{3};
-    if( (strcmpi('el',LUOGO)) && (mod(neighbors,4) ~= 2) ) %just to have a uniform distribuition of neighbors
-%         error('Hyperbole requires mod(neighbors,4)==2 neighbors');
+    %just to have a uniform distribuition of neighbors
+    if( (strcmpi('el',LUOGO)) && (mod(neighbors,4) ~= 2) ) 
+        error('Hyperbole requires mod(neighbors,4)==2 neighbors');
     end
     PARAM1=varargin{5};
     if ((strcmpi('el',LUOGO) || strcmpi('sp',LUOGO)) && (nargin<6))
-%         error('2 geometric parameters required');
+         error('2 geometric parameters required');
     end
 
     if (nargin>5)
