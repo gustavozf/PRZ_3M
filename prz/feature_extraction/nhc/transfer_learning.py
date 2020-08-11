@@ -8,7 +8,7 @@ class PreTrainedCNNModels():
                            include_top=False, 
                            input_shape=input_shape)
 
-        return base_model
+        return base_model, input_shape
 
     @staticmethod
     def InceptionV3(weights='imagenet', input_shape=(299, 299, 3)):
@@ -17,7 +17,7 @@ class PreTrainedCNNModels():
                                  include_top=False,
                                  input_shape=input_shape)
 
-        return base_model
+        return base_model, input_shape
 
     @staticmethod
     def InceptionResNetV2(weights='imagenet', input_shape=(299, 299, 3)):
@@ -26,12 +26,12 @@ class PreTrainedCNNModels():
                                        include_top=False,
                                        input_shape=input_shape)
 
-        return base_model
+        return base_model, input_shape
 
 class CNNPredictor():
     def __init__(self, model=PreTrainedCNNModels.VGG16()): 
-        self.__model = model
+        self.model, self.input_shape = model
 
     def extract_features(self, imgs=np.array([])):
-        features = self.__model.predict(imgs)
+        features = self.model.predict(imgs)
         return np.reshape(features, (np.prod(np.shape(features))))
