@@ -15,22 +15,25 @@ class DataIO:
     def pathExists(fpath): return os.path.exists(fpath)
 
     @staticmethod
-    def absPath(fpath):
-        assert DataIO.pathExists(fpath), Strings.no_path
-        assert DataIO.isDir(fpath), Strings.path_not_dir
+    def absPath(fpath, ignore_asserts=False):
+        if not ignore_asserts:
+            assert DataIO.pathExists(fpath), Strings.no_path
+            assert DataIO.isDir(fpath), Strings.path_not_dir
 
         return os.path.abspath(fpath)
 
     @staticmethod
-    def listDir(fpath):
-        assert DataIO.pathExists(fpath), Strings.no_path
-        assert DataIO.isDir(fpath), Strings.path_not_dir
+    def listDir(fpath, ignore_asserts=False):
+        if not ignore_asserts:
+            assert DataIO.pathExists(fpath), Strings.no_path
+            assert DataIO.isDir(fpath), Strings.path_not_dir
 
         return os.listdir(fpath)
 
     @staticmethod
-    def createDir(fpath):
-        assert not DataIO.pathExists(fpath), Strings.path_exists
+    def createDir(fpath, ignore_asserts=False):
+        if not ignore_asserts:
+            assert not DataIO.pathExists(fpath), Strings.path_exists
 
         try:
             os.makedirs(fpath)
