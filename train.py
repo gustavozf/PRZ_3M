@@ -1,0 +1,3 @@
+from prz.classification.pre_trained_cnn import PreTrainedCnnModels
+
+print(PreTrainedCnnModels)

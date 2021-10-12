@@ -1,10 +1,9 @@
+import os
+
 import cv2
 import numpy as np
 
-from prz.resources.data.io import DataIO
 from prz.definitions.strings import Strings
-from prz.definitions.configs import Configs
-
 
 class ImageSample:
     @staticmethod
@@ -15,7 +14,9 @@ class ImageSample:
             'UNC': cv2.IMREAD_UNCHANGED,
         }
 
-        assert mode in cv_color.keys(), Strings.invalid_parameter_value % (mode, 'mode')
+        assert mode in cv_color, (
+            Strings.invalid_parameter_value % (mode, 'mode')
+        )
 
         img = cv2.imread(img_path, cv_color[mode])
 
@@ -26,13 +27,14 @@ class ImageSample:
 
     @staticmethod
     def write(img=np.array([]), out_path='./', file_name='out.png'):
-        assert DataIO.pathExists(out_path), Strings.no_path
+        assert os.path.exists(out_path), Strings.no_path
 
-        return cv2.imwrite(f'{out_path}{Configs.dir_sep}{file_name}', img)
+        return cv2.imwrite(os.path.join(out_path, file_name) , img)
 
     @staticmethod
     def cvt_color(img_src=np.array([]),
-                  config={'from': 'BGR', 'to': 'RGB'},
+                  from_cs='BGR',
+                  to_cs='RGB',
                   cv_cvt_code=None):
         color_cvt_codes = {
             'BGR': {'RGB': cv2.COLOR_BGR2RGB, 'HSV': cv2.COLOR_BGR2HSV},
@@ -43,11 +45,10 @@ class ImageSample:
         if (cv_cvt_code):
             code = cv_cvt_code
         else:
-            assert {'from', 'to'}.issubset(set(config.keys()))
-            assert config['from'] in color_cvt_codes.keys()
-            assert config['to'] in color_cvt_codes[config['from']].keys()
+            assert from_cs in color_cvt_codes.keys()
+            assert to_cs in color_cvt_codes[from_cs].keys()
 
-            code = color_cvt_codes[config['from']][config['to']]
+            code = color_cvt_codes[from_cs][to_cs]
 
         return cv2.cvtColor(img_src, code)
 
