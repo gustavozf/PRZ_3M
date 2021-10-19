@@ -1,4 +1,5 @@
 import os
+import shutil
 
 import pandas as pd
 
@@ -35,6 +36,7 @@ for _file in file_paths:
 
 assert len(mrg_data) + len(enc_data) + len(egc_data) == EXPECTED_NUM_SAMPLES
 
+        
 if not os.path.exists(OUTPUT_PATH):
     print('Creating path: ', OUTPUT_PATH)
     os.makedirs(OUTPUT_PATH)
@@ -49,17 +51,17 @@ for _name, data_list in iter_data:
         'sample_id': [],
         'label': [],
     }
+
     for data_path in data_list:
-        print(split_path(data_path))
-        quit()
-        animal_tag, sample_id = split_path(data_path)[-3:-1]
-        
-        out_data['file_path'].append(data_path)
+        local_path = split_path(data_path)[-6:]
+        animal_tag, sample_id = local_path[-3:-1]
+
+        out_data['file_path'].append(os.path.join(*local_path))
         out_data['anim_tag'].append(animal_tag)
         out_data['anim_tag_id'].append(animal_tags[animal_tag])
         out_data['sample_id'].append(int(sample_id))
         out_data['label'].append(0 if 'C' in animal_tag else 1)
 
-    out_path = os.path.join(INPUT_PATH, f'tw_{_name}.csv')
+    out_path = os.path.join(OUTPUT_PATH, f'tw_{_name}.csv')
     print('Saving file: ', out_path)
     pd.DataFrame(out_data).to_csv(out_path)
