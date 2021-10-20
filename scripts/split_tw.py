@@ -7,7 +7,7 @@ from utils import walk, split_path
 
 BASE_PATH = os.path.abspath(os.path.dirname(__file__))
 INPUT_PATH = os.path.join(BASE_PATH, '..', 'data', 'raw', 'TW')
-OUTPUT_PATH = os.path.join(BASE_PATH, '..', 'data', 'interim', 'TW')
+OUTPUT_PATH = os.path.join(BASE_PATH, '..', 'data', 'interim')
 EXPECTED_NUM_SAMPLES = 1248
 
 mrg_data = []
@@ -53,10 +53,9 @@ for _name, data_list in iter_data:
     }
 
     for data_path in data_list:
-        local_path = split_path(data_path)[-6:]
-        animal_tag, sample_id = local_path[-3:-1]
+        animal_tag, sample_id = split_path(data_path)[-3:-1]
 
-        out_data['file_path'].append(os.path.join(*local_path))
+        out_data['file_path'].append(data_path)
         out_data['anim_tag'].append(animal_tag)
         out_data['anim_tag_id'].append(animal_tags[animal_tag])
         out_data['sample_id'].append(int(sample_id))

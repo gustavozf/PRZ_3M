@@ -39,7 +39,7 @@ class PreTrainedCnnModels:
     @classmethod
     def preprocess_data(cls, data: np.array, model_name: str='ResNet50V2'):
         cls.__check_model_availability(model_name)
-        return  cls.__preprocess_methods[model_name](data)
+        return cls.__preprocess_methods[model_name](data)
 
     @classmethod
     def feature_extraction(
@@ -66,7 +66,7 @@ class PreTrainedCnnModels:
             X_valid: np.array, y_valid: np.array,
             model_name: str='ResNet50V2',
             weights: str='imagenet',
-            out_layers_config: dict = NeuralNetConfigs.default_out_layers,
+            out_layers_config: dict=NeuralNetConfigs.default_out_layers,
             **kwargs
         ):
         # Check the output layer configuration dictionary
@@ -81,16 +81,20 @@ class PreTrainedCnnModels:
         epochs = kwargs.get('epochs', 64)
         batch_size = kwargs.get('batch_size', 32)
         callbacks = kwargs.get('callbacks', [])
+        loss = kwargs.get('loss', 'categorical_crossentropy')
+        last_layer = kwargs.get('last_layer', 'softmax')
 
         # Check if "model_name" is valid
         cls.__check_model_availability(model_name)
         # Process the input data
-        X_train = PreTrainedCnnModels.preprocess_data(
-            X_train, model_name=model_name
-        )
-        X_valid = PreTrainedCnnModels.preprocess_data(
-            X_valid, model_name=model_name
-        )
+        X_train = np.array([
+            PreTrainedCnnModels.preprocess_data(img, model_name=model_name)
+            for img in X_train
+        ])
+        X_valid = np.array([
+            PreTrainedCnnModels.preprocess_data(img, model_name=model_name)
+            for img in X_train
+        ])
 
         # Create the base pre-trained model
         base_model = cls.__models[model_name](
@@ -104,9 +108,10 @@ class PreTrainedCnnModels:
                 out_layers_config['num_units'][layer],
                 activation=out_layers_config['activation']
             )(x)
+
         predictions = Dense(
             out_layers_config['n_classes'],
-            activation='softmax'
+            activation=last_layer
         )(x)
 
         model = Model(inputs=base_model.input, outputs=predictions)
@@ -118,7 +123,7 @@ class PreTrainedCnnModels:
         # Train with the frozen layers
         model.compile(
             optimizer=optimizer,
-            loss='categorical_crossentropy',
+            loss=loss,
         )
         model.fit(
             X_train, y_train,
@@ -136,7 +141,7 @@ class PreTrainedCnnModels:
         # Train with the whole network
         model.compile(
             optimizer=optimizer,
-            loss='categorical_crossentropy',
+            loss=loss,
         )
         model.fit(
             X_train, y_train,
