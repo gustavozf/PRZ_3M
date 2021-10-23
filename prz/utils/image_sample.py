@@ -2,6 +2,7 @@ import os
 
 import cv2
 import numpy as np
+from tensorflow import image
 
 from prz.definitions.strings import Strings
 
@@ -70,3 +71,7 @@ class ImageSample:
             img_src = img_src[:, :, 2]
 
         return img_src
+
+    @staticmethod
+    def resize(img_scr: np.array, target_shape: tuple):
+        return image.resize(img_scr, (224, 224))

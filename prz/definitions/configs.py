@@ -1,3 +1,4 @@
+from tensorflow.keras.layers import LeakyReLU
 from tensorflow.keras.optimizers import Adam
 
 class NeuralNetConfigs:
@@ -8,8 +9,9 @@ class NeuralNetConfigs:
         decay=0.0005
     )
     default_out_layers = {
-        'n_layers': 2,
-        'num_units': [1024, 512],
-        'activation': 'relu',
+        'n_layers': 4,
+        'num_units': [1024, 512, 256, 128],
+        'activation': LeakyReLU(alpha=0.01),
         'n_classes': 2,
+        'last_layer_actv': 'softmax',
     }

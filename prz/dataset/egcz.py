@@ -8,7 +8,12 @@ from prz.utils.image_sample import ImageSample
 img_reader = np.vectorize(lambda img : ImageSample.read(img))
 
 class EgczDataset(object):
-    def __init__(self, data: list, label: list, groups: list):
+    def __init__(
+            self,
+            fpaths: np.array,
+            data: np.array,
+            label: np.array,
+            groups: np.array):
         self.data = data
         self.label = label
         self.groups = groups
@@ -19,6 +24,7 @@ class EgczDataset(object):
         df = pd.read_csv(fpath)
 
         return EgczDataset(
+            df['file_path'].to_numpy(),
             df['file_path'].apply(ImageSample.read).to_numpy(),
             to_categorical(df['label'].to_numpy(), num_classes=2),
             df['anim_tag_id'].to_numpy()
