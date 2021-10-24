@@ -74,4 +74,4 @@ class ImageSample:
 
     @staticmethod
     def resize(img_scr: np.array, target_shape: tuple):
-        return image.resize(img_scr, (224, 224))
+        return image.resize(img_scr, target_shape)

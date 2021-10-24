@@ -3,7 +3,8 @@ import json
 import argparse
 from datetime import datetime
 
-from numpy import argmax
+import numpy as np
+import pandas as pd
 from tensorflow.keras.callbacks import (
     ModelCheckpoint, TensorBoard, ReduceLROnPlateau
 )
@@ -13,6 +14,32 @@ from tensorflow.keras.models import load_model
 from prz.dataset.egcz import EgczDataset
 from prz.classification.cnn_fine_tuner import CnnFineTuner
 from prz.utils.plot import plot_history
+
+def update_out_dict(
+        output_data: dict,
+        group: int=0,
+        file_paths: np.array=None,
+        y_true: np.array=None,
+        probas: np.array=None,
+    ):
+    output_data['file_path'].extend(file_paths)
+    output_data['group_id'].extend([group for _ in range(len(y_true))])
+    output_data['y_true'].extend(np.argmax(y_true, axis=1))
+    output_data['y_pred'].extend(np.argmax(probas, axis=1))
+
+    for i in range(probas.shape[1]):
+        output_data[f'proba_{i}'].extend(probas[:, i])
+
+def create_out_dict(n_classes: int):
+    return {
+        'file_path': [],
+        'group_id': [],
+        'y_true': [],
+        'y_pred': [],
+        **{
+            f'proba_{i}': [] for i in range(n_classes)
+        }
+    }
 
 def dump_json(data, out_path: str):
     with open(out_path, 'w', encoding='utf8') as json_file:
@@ -40,16 +67,7 @@ def get_args():
         '--model',
         type=str,
         default='ResNet50V2',
-        choices={
-            'VGG16',
-            'VGG19',
-            'ResNet50V2',
-            'ResNet101V2',
-            'ResNet152V2',
-            'InceptionV3',
-            'InceptionResNetV2',
-            'MobileNetV2'
-        },
+        choices=list(CnnFineTuner.MODELS.keys()),
         help='Base model for training.'
     )
     parser.add_argument(
@@ -75,17 +93,13 @@ def main():
     dataset = EgczDataset.from_csv(args.input)
     time_stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
     gen_output = os.path.join(args.output, time_stamp)
+    out_data = create_out_dict(dataset.n_classes)
 
     if not os.path.exists(gen_output):
         os.makedirs(gen_output)
 
     dump_json(vars(args), os.path.join(gen_output, 'args.json'))
 
-    out_data = {
-        'y_true': [],
-        'y_probas': [],
-        'y_pred': [],
-    }
     count = 0
     for train_index, test_index in dataset.leave_one_out_kfold_cv():
         X_train, X_test = dataset.data[train_index], dataset.data[test_index]
@@ -93,19 +107,16 @@ def main():
         group_id = dataset.groups[test_index][0]
 
         # Process the input data
-        X_train = CnnFineTuner.preprocess_data_array(
-            X_train, args.model, model.input_shape 
+        X_train = CnnFineTuner.MODELS[args.model].preprocess_data_array(
+            X_train, resize=True
         )
-        X_valid = CnnFineTuner.preprocess_data_array(
-            X_valid, args.model, model.input_shape 
+        X_test = CnnFineTuner.MODELS[args.model].preprocess_data_array(
+            X_test, resize=True 
         )
 
         print(f'Training fold #{count} / Testing group: {group_id}')
         group_output = os.path.join(gen_output, f'group_{group_id}')
-        # model_output = os.path.join(
-        #     group_output,
-        #     f'model_{group_id}_' + '{epoch:02d}-{val_loss:.2f}.hdf5'
-        # )
+        model_output = os.path.join(group_output, f'model_{count}.tf')
 
         if not os.path.exists(group_output):
             os.makedirs(group_output)
@@ -118,11 +129,12 @@ def main():
             batch_size=args.batch_size,
             loss='binary_crossentropy',
             callbacks=[
-                # ModelCheckpoint(
-                #     filepath=model_output,
-                #     save_best_only=True,
-                #     monitor='val_accuracy',
-                # ),
+                ModelCheckpoint(
+                    filepath=model_output,
+                    save_best_only=True,
+                    monitor='val_loss',
+                    mode='min'
+                ),
                 # TensorBoard(log_dir=os.path.join(curr_output, 'logs')),
                 ReduceLROnPlateau(
                     monitor='val_loss',
@@ -133,16 +145,22 @@ def main():
             ],
         )
 
-        plot_history(hist.history, os.path.join(group_output, f'{count}_hist'))
-
         # Get predictions
-        # model = load_model(model_output)
+        model = load_model(model_output)
         probas = model.predict(X_test)
+        
+        # Update the output dict
+        update_out_dict(
+            out_data,
+            group=group_id,
+            y_true=y_test,
+            probas=probas,
+            file_paths=dataset.file_path[test_index]
+        )
 
-        out_data['y_true'].extend(y_test)
-        out_data['y_probas'].extend(probas)
-        out_data['y_pred'].extend(argmax(probas))
-        dump_json(out_data, os.path.join(gen_output, 'preds.json'))
+        # Save outputs
+        pd.DataFrame(out_data).to_csv(os.path.join(gen_output, 'preds.csv'))
+        plot_history(hist.history, os.path.join(group_output, f'{count}_hist'))
 
         count += 1
 

@@ -6,7 +6,7 @@ from prz.classification import pretrained_models
 from prz.definitions.configs import NeuralNetConfigs
 
 class CnnFineTuner:
-    __models = {
+    MODELS = {
         'VGG16': pretrained_models.VGG16,
         'VGG19': pretrained_models.VGG19,
         'ResNet50V2': pretrained_models.ResNet50V2,
@@ -19,11 +19,38 @@ class CnnFineTuner:
 
     @classmethod
     def __check_model_availability(cls, model_name: str):
-        available_models = set(cls.__models.keys())
+        available_models = set(cls.MODELS.keys())
         assert model_name in available_models, (
             f'Model {model_name} not available among the supported models. '
             f'Currently supported models: {available_models}'
         )
+    
+    @classmethod
+    def __create_models(
+            cls, model_name: str, weights: str, out_layers_config: dict,
+        ):
+        # Create the base pre-trained model
+        base_model = cls.MODELS[model_name].MODEL(
+            weights=weights, include_top=False
+        )
+
+        # Create the output (dense) layers
+        x = base_model.output
+        x = GlobalAveragePooling2D()(x)
+        for layer in range(out_layers_config['n_layers']):
+            x = Dense(
+                out_layers_config['num_units'][layer],
+                activation=out_layers_config['activation']
+            )(x)
+
+        predictions = Dense(
+            out_layers_config['n_classes'],
+            activation=out_layers_config['last_layer_actv']
+        )(x)
+
+        model = Model(inputs=base_model.input, outputs=predictions)
+
+        return base_model, model
 
     @classmethod
     def fine_tuning(
@@ -95,30 +122,3 @@ class CnnFineTuner:
         )
 
         return history, model
-    
-    @classmethod
-    def __create_models(
-            cls, model_name: str, weights: str, out_layers_config: dict,
-        ):
-        # Create the base pre-trained model
-        base_model = cls.__models[model_name](
-            weights=weights, include_top=False
-        )
-
-        # Create the output (dense) layers
-        x = base_model.output
-        x = GlobalAveragePooling2D()(x)
-        for layer in range(out_layers_config['n_layers']):
-            x = Dense(
-                out_layers_config['num_units'][layer],
-                activation=out_layers_config['activation']
-            )(x)
-
-        predictions = Dense(
-            out_layers_config['n_classes'],
-            activation=out_layers_config['last_layer_actv']
-        )(x)
-
-        model = Model(inputs=base_model.input, outputs=predictions)
-
-        return base_model, model

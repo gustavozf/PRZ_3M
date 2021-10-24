@@ -1,8 +1,8 @@
-import json
+import pandas as pd
 
 import matplotlib.pyplot as plt
 
-def plot_history(history: dict, out_path: str, save_json: bool=False):
+def plot_history(history: dict, out_path: str, save_df: bool=True):
     #taken from: https://machinelearningmastery.com/display-deep-learning-model-training-history-in-keras/
 
     # summarize history for accuracy
@@ -26,6 +26,5 @@ def plot_history(history: dict, out_path: str, save_json: bool=False):
     plt.clf()
 
 
-    if save_json:
-        with open(out_path+'_hist.json', 'w') as json_file:
-            json.dump(history, json_file, indent=2)
+    if save_df:
+        pd.DataFrame(history).to_csv(out_path+'_hist.csv')
