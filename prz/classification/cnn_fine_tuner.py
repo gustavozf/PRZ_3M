@@ -1,9 +1,10 @@
 import numpy as np
 from tensorflow.keras.models import Model
-from tensorflow.keras.layers import Dense, GlobalAveragePooling2D
+from tensorflow.keras.layers import Dense, GlobalAveragePooling2D, Dropout
 
 from prz.classification import pretrained_models
 from prz.definitions.configs import NeuralNetConfigs
+from prz.classification import classification_layers
 
 class CnnFineTuner:
     MODELS = {
@@ -16,6 +17,11 @@ class CnnFineTuner:
         'InceptionResNetV2': pretrained_models.InceptionResNetV2,
         'MobileNetV2': pretrained_models.MobileNetV2
     }
+    CLF_LAYERS = {
+        'alexnet': classification_layers.alexnet,
+        'roeckernet': classification_layers.roeckernet,
+        'lenet5': classification_layers.roeckernet,
+    }
 
     @classmethod
     def __check_model_availability(cls, model_name: str):
@@ -27,7 +33,11 @@ class CnnFineTuner:
     
     @classmethod
     def __create_models(
-            cls, model_name: str, weights: str, out_layers_config: dict,
+            cls,
+            model_name: str,
+            weights: str,
+            clf_layers: str,
+            n_classes:int=2,
         ):
         # Create the base pre-trained model
         base_model = cls.MODELS[model_name].MODEL(
@@ -37,16 +47,7 @@ class CnnFineTuner:
         # Create the output (dense) layers
         x = base_model.output
         x = GlobalAveragePooling2D()(x)
-        for layer in range(out_layers_config['n_layers']):
-            x = Dense(
-                out_layers_config['num_units'][layer],
-                activation=out_layers_config['activation']
-            )(x)
-
-        predictions = Dense(
-            out_layers_config['n_classes'],
-            activation=out_layers_config['last_layer_actv']
-        )(x)
+        predictions = cls.CLF_LAYERS[clf_layers](x, n_classes)
 
         model = Model(inputs=base_model.input, outputs=predictions)
 
@@ -58,19 +59,20 @@ class CnnFineTuner:
             X_train: np.array, y_train: np.array,
             X_valid: np.array, y_valid: np.array,
             model_name: str='ResNet50V2',
+            clf_layers:str='MAXNET',
             weights: str='imagenet',
-            out_layers_config: dict=NeuralNetConfigs.default_out_layers,
+            n_classes: int=2,
             **kwargs
         ):
         # Check the output layer configuration dictionary
-        required_out_fields = set(NeuralNetConfigs.default_out_layers.keys())
-        assert required_out_fields.issubset(set(out_layers_config.keys())), (
-            'Inputted output layers configuration dictionary must '
-            f'present the following items: {required_out_fields}'
+        available_clf_layers = set(cls.CLF_LAYERS.keys())
+        assert clf_layers in available_clf_layers, (
+            'Inputted output layers configuration must '
+            f'present the following items: {available_clf_layers}'
         )
 
         # Get the training arguments from **kwargs
-        optimizer = kwargs.get('optimizer', NeuralNetConfigs.default_opt)
+        optimizer = kwargs.get('optimizer', NeuralNetConfigs.DEFAULT_OPT)
         verbose = kwargs.get('verbose', 1)
         epochs = kwargs.get('epochs', 64)
         batch_size = kwargs.get('batch_size', 32)
@@ -80,7 +82,7 @@ class CnnFineTuner:
         # Check if "model_name" is valid
         cls.__check_model_availability(model_name)
         base_model, model = cls.__create_models(
-            model_name, weights, out_layers_config,
+            model_name, weights, clf_layers, n_classes=n_classes
         )
 
         # Freeze the input layers

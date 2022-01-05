@@ -5,11 +5,10 @@ from datetime import datetime
 
 import numpy as np
 import pandas as pd
-from tensorflow.keras.callbacks import (
-    ModelCheckpoint, TensorBoard, ReduceLROnPlateau
-)
+from sklearn.metrics import classification_report
+from tensorflow.keras.callbacks import ModelCheckpoint, ReduceLROnPlateau
 from tensorflow.keras import backend as K
-from tensorflow.keras.models import load_model 
+from tensorflow.keras.models import load_model
 
 from prz.dataset.egcz import EgczDataset
 from prz.classification.cnn_fine_tuner import CnnFineTuner
@@ -71,6 +70,14 @@ def get_args():
         help='Base model for training.'
     )
     parser.add_argument(
+        '-c',
+        '--clf_layers',
+        type=str,
+        default='roeckernet',
+        choices=list(CnnFineTuner.CLF_LAYERS.keys()),
+        help='Classification layers configuration.'
+    )
+    parser.add_argument(
         '-e',
         '--epochs',
         type=int,
@@ -94,6 +101,7 @@ def main():
     time_stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
     gen_output = os.path.join(args.output, time_stamp)
     out_data = create_out_dict(dataset.n_classes)
+    out_pred_path = os.path.join(gen_output, 'preds.csv')
 
     if not os.path.exists(gen_output):
         os.makedirs(gen_output)
@@ -116,31 +124,26 @@ def main():
 
         print(f'Training fold #{count} / Testing group: {group_id}')
         group_output = os.path.join(gen_output, f'group_{group_id}')
-        model_output = os.path.join(group_output, f'model_{count}.tf')
+        model_output = os.path.join(group_output, f'model.tf')
 
         if not os.path.exists(group_output):
             os.makedirs(group_output)
 
-        hist, model = CnnFineTuner.fine_tuning(
+        hist, _ = CnnFineTuner.fine_tuning(
             X_train, y_train,
             X_test, y_test,
             model_name=args.model,
             epochs=args.epochs,
             batch_size=args.batch_size,
+            clf_layers=args.clf_layers,
+            n_classes=dataset.n_classes,
             loss='binary_crossentropy',
             callbacks=[
                 ModelCheckpoint(
                     filepath=model_output,
                     save_best_only=True,
-                    monitor='val_loss',
-                    mode='min'
-                ),
-                # TensorBoard(log_dir=os.path.join(curr_output, 'logs')),
-                ReduceLROnPlateau(
-                    monitor='val_loss',
-                    factor=0.1,
-                    patience=10,
-                    min_lr=0.000001
+                    monitor='val_accuracy',
+                    mode='max'
                 )
             ],
         )
@@ -159,13 +162,20 @@ def main():
         )
 
         # Save outputs
-        pd.DataFrame(out_data).to_csv(os.path.join(gen_output, 'preds.csv'))
-        plot_history(hist.history, os.path.join(group_output, f'{count}_hist'))
+        pd.DataFrame(out_data).to_csv(out_pred_path)
+        plot_history(hist.history, os.path.join(group_output, 'hist'))
 
         count += 1
 
         del X_train, X_test, y_train, y_test, hist
         K.clear_session()
+
+    dump_json(
+        classification_report(
+            out_data['y_true'], out_data['y_pred'], digits=4, output_dict=True,
+        ),
+        os.path.join(gen_output, 'classification_report.json'),
+    )
 
 if __name__ == '__main__':
     main()
