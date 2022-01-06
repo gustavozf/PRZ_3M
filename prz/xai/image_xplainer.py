@@ -18,7 +18,7 @@ class ImageXplainer:
         self.pred_fn = pred_fn
         self.class_names = class_names
 
-    def shap(self, n_evals: int = 5000):
+    def shap(self, n_evals: int = 500):
         explainer = shap.Explainer(
             self.pred_fn,
             shap.maskers.Image("inpaint_telea", self.shape),
@@ -26,12 +26,16 @@ class ImageXplainer:
         shap_values = explainer(
             self.data,
             max_evals=n_evals,
-            batch_size=50,
             outputs=shap.Explanation.argsort.flip[:2]
         )
-        print(shap_values[0])
         print(shap_values.shape)
-        shap.image_plot(shap_values)
+        print(shap_values[0].shape)
+        print(self.labels.shape)
+        print(np.tile(np.array(shap_values.output_names), 2))
+
+        for i in range(shap_values.shape[0]):
+            shap.image_plot(shap_values[i])
+            input('Inserir qlqr coisa')
 
     def lime(
             self,

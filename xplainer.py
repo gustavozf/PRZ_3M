@@ -2,12 +2,19 @@ import os
 import argparse
 
 import numpy as np
-import matplotlib.pyplot as plt
 from tensorflow.keras.models import load_model
 
 from prz.dataset.egcz import EgczDataset
+from prz.utils.image_sample import ImageSample
 from prz.classification.cnn_fine_tuner import CnnFineTuner
 from prz.xai.image_xplainer import ImageXplainer
+
+def save_output_imgs(img_list: list, output_path: str, img_names: list):
+    assert len(img_list) == len(img_names)
+
+    for i in range(len(img_list)):
+        pass
+    return
 
 def make_output_path(out_path: str, img_name: str):
     return os.path.join(
@@ -23,7 +30,7 @@ def get_args():
 
     parser.add_argument(
         '-i',
-        '--input_path',
+        '--input_data',
         type=str,
         required=True,
         help='Path to the test data in a CSV format.'
@@ -65,7 +72,7 @@ def main():
     args = get_args()
 
     print('Loading data')
-    dataset = EgczDataset.from_csv(args.input_path)
+    dataset = EgczDataset.from_csv(args.input_data)
     print('Preprocessing data')
     X_data = CnnFineTuner.MODELS[args.model_name].preprocess_data_array(
         dataset.data, resize=True
@@ -92,7 +99,7 @@ def main():
             make_output_path(args.output, dataset.file_path[i]),
             dataset.label[i],
             X_data[i]/2 + 0.5,
-            np.zeros(X_data[i].shape),
+            shap_out_list[i], #np.zeros(X_data[i].shape)
             lime_out_list[i]
         )
 

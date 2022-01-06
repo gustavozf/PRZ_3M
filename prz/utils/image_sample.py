@@ -30,7 +30,7 @@ class ImageSample:
     def write(img_src:np.array, out_path:str, file_name:str='out.png'):
         assert os.path.exists(out_path), Strings.no_path
 
-        return cv2.imwrite(os.path.join(out_path, file_name) , img_src)
+        return cv2.imwrite(os.path.join(out_path, file_name), img_src)
 
     @staticmethod
     def cvt_color(
