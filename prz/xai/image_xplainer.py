@@ -1,67 +1,104 @@
+import os
+
 import shap
 import numpy as np
 import matplotlib.pyplot as plt
 from lime import lime_image
+from tensorflow.keras.layers import Input
+from tensorflow.keras.models import Model
 from skimage.segmentation import mark_boundaries
 
+SHAP_XPLAINERS = {
+    'DeepExplainer': shap.DeepExplainer,
+    'GradientExplainer': shap.GradientExplainer,
+}
+
+def preprocess_lime(x):
+    return x / 2 + 0.5
+
+def fixed_input_model(model, input_shape: tuple):
+    new_input = Input(batch_shape=input_shape)
+    new_outputs = model(new_input)
+    new_model = Model(new_input,new_outputs)
+
+    new_model.set_weights(model.get_weights())
+
+    return new_model
+
+def get_shap_xplainer(name: str):
+    assert name in set(SHAP_XPLAINERS.keys()), 'Invalid SHAP explainer!'
+
+    return SHAP_XPLAINERS[name]
+
 class ImageXplainer:
-
-    def __init__(
-            self,
-            data: np.array,
-            labels: np.array,
+    @staticmethod
+    def shap(
             pred_fn,
-            class_names: list = ['C', 'TW']) -> None:
-        self.data = data
-        self.labels = labels
-        self.shape = data[0].shape
-        self.pred_fn = pred_fn
-        self.class_names = class_names
-
-    def shap(self, n_evals: int = 500):
+            data: np.array,
+            shape: np.array,
+            class_names: list = ['C', 'TW'],
+            n_evals: int = 50000,
+            masker_mode: str = 'inpaint_telea'):
         explainer = shap.Explainer(
-            self.pred_fn,
-            shap.maskers.Image("inpaint_telea", self.shape),
-            output_names=self.class_names)
-        shap_values = explainer(
-            self.data,
+            pred_fn,
+            masker=shap.maskers.Image(masker_mode, shape),
+            output_names=class_names)
+
+        return explainer(
+            data,
             max_evals=n_evals,
+            batch_size=50,
             outputs=shap.Explanation.argsort.flip[:2]
         )
-        print(shap_values.shape)
-        print(shap_values[0].shape)
-        print(self.labels.shape)
-        print(np.tile(np.array(shap_values.output_names), 2))
-
-        for i in range(shap_values.shape[0]):
-            shap.image_plot(shap_values[i])
-            input('Inserir qlqr coisa')
-
+    
+    @staticmethod
+    def shap_deep(
+            model,
+            data: np.array,
+            background: np.array,
+            batch_size: int = 50,
+            xplainer: str = 'DeepExplainer'):
+        model = fixed_input_model(model, (batch_size,) + background.shape[1:])
+        e = get_shap_xplainer(xplainer)(
+            model, background, batch_size=batch_size
+        )
+        return e.shap_values(data)
+        # return e(
+        #     data[:4],
+        #     max_evals=50000,
+        #     batch_size=50,
+        #     outputs=shap.Explanation.argsort.flip[:2]
+        # )
+        
+    @staticmethod
     def lime(
-            self,
-            num_samples: int = 2024,
-            process_img_fn = lambda x : x / 2 + 0.5):
+            pred_fn,
+            data: np.array,
+            labels: np.array,
+            num_samples: int = 4048,
+            process_img_fn = preprocess_lime):
         """
             Source from: https://marcotcr.github.io/lime/tutorials/Tutorial%20-%20images.html
         """
         output_img_list = []
         explainer = lime_image.LimeImageExplainer()
 
-        for i in range(len(self.data)):
+        for i in range(len(data)):
             plt.clf()
-            image = self.data[i]
-            label = self.labels[i]
+            image = data[i]
+            label = labels[i]
             xplnation  = explainer.explain_instance(
                 image,
-                self.pred_fn,
+                pred_fn,
                 batch_size=50,
-                num_samples=num_samples)
+                num_samples=num_samples,
+                random_seed=101)
             
             temp, mask = xplnation.get_image_and_mask(
                 label,
                 positive_only=False,
                 num_features=5,
-                hide_rest=False
+                hide_rest=False,
             )
 
             output_img_list.append(
@@ -70,24 +107,43 @@ class ImageXplainer:
         
         return output_img_list
 
-    def plot(
-            self,
-            output_path: str,
-            true_label: int,
-            image: np.array,
-            shap_output: np.array,
-            lime_output: np.array,
-            ):
-        fig, (ax1, ax2, ax3) = plt.subplots(1, 3)
-        fig.suptitle('Image Explanation')
-        ax1.imshow(image)
-        ax2.imshow(shap_output)
-        ax3.imshow(lime_output)
+    @staticmethod
+    def plot_lime(
+            imgs: list,
+            out_path: str,
+            img_names: list):
+        if not os.path.exists(out_path):
+            os.makedirs(out_path)
 
-        ax1.set_title('Original')
-        ax2.set_title('SHAP')
-        ax3.set_title('Lime')
+        for i in range(len(imgs)):
+            plt.imshow(imgs[i])
+            plt.savefig(os.path.join(out_path, img_names[i]))
+            plt.clf()
 
-        plt.axis('off')
-        plt.savefig(output_path, format="svg")
-        plt.clf()
+    @staticmethod
+    def plot_shap(
+            imgs: np.array,
+            shap_values: np.array,
+            out_path: str,
+            img_names: list):
+        if not os.path.exists(out_path):
+            os.makedirs(out_path)
+
+        print(shap_values.shape)
+
+        for i in range(len(shap_values)):
+            # shap_numpy = [
+            #     np.swapaxes(np.swapaxes(s, 1, -1), 1, 2) for s in shap_values
+            # ]
+            # test_numpy = np.swapaxes(np.swapaxes(imgs, 1, -1), 1, 2)
+
+            # shap.image_plot(shap_numpy, -test_numpy)
+
+            print(shap_values[i].shape)
+            print(imgs[i].shape)
+
+            shap.image_plot(shap_values[i], show=False)
+            plt.savefig(os.path.join(out_path, img_names[i]))
+            plt.clf()
+
+            return
