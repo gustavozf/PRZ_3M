@@ -65,6 +65,13 @@ def get_args():
         nargs='+',
         help='Experiment tags.'
     )
+    parser.add_argument(
+        '-o',
+        '--output',
+        type=str,
+        default='outputs/',
+        help='Output path.'
+    )
 
     return parser.parse_args()
 
@@ -98,7 +105,7 @@ def main():
             os.path.join(os.path.dirname(input_path), 'acc_stats.json')
         )
 
-    plot_acc_comparison(plotable_accs, './', ANIM_TAGS)
+    plot_acc_comparison(plotable_accs, args.output, ANIM_TAGS)
 
 if __name__ == '__main__':
     main()
