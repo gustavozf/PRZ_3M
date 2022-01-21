@@ -4,6 +4,10 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
+COLOR_SCHEMA_DEFAULT = ['green', 'red', 'blue']
+COLOR_SCHEMA_LIGHT = ['#FDD6D3', '#B3EAC3', '#D0E1FF']
+COLOR_SCHEMA_DARK = ['#2171B5', '#6BAED6', '#08306B']
+
 def plot_history(history: dict, out_path: str, save_df: bool=True):
     #taken from: https://machinelearningmastery.com/display-deep-learning-model-training-history-in-keras/
 
@@ -34,13 +38,9 @@ def plot_acc_comparison(
         data: dict,
         out_path: str,
         labels: list,
-        width: float = 0.88,
+        width: float = 0.84,
         data_keys: list = ['CGE', 'CNE', 'MRG'],
-        colors: list = [
-            '#FDD6D3', # (253, 214, 211)
-            '#B3EAC3', # (179, 234, 195)
-            '#D0E1FF', # (208, 225, 255)
-        ],
+        colors: list = COLOR_SCHEMA_LIGHT,
         ylabel: str = 'Animal',
         xlabel: str = 'Acurácia'):
     data_keys_len = len(data_keys)
@@ -56,17 +56,22 @@ def plot_acc_comparison(
         ax=ax2,
         xlim=x_lim,
         width=width, 
-        figsize=(8,6))
+        figsize=(8,10))
 
     ax2.invert_yaxis()  
 
     for container in ax2.containers:
-        ax2.bar_label(container, padding=-20, fmt='%.3f', fontsize=6 )
+        ax2.bar_label(
+            container,
+            padding=-20,
+            fmt='%.3f',
+            fontsize=6,
+            color='black')
     
     ax2.grid(axis='x', linestyle='--')
     ax2.set_xlabel(xlabel)
     ax2.set_ylabel(ylabel)
 
     plt.legend(loc='upper left')
-    plt.savefig(out_path + 'acc_comp.png')
+    plt.savefig(out_path + 'acc_comp.png', bbox_inches='tight')
     plt.clf()
