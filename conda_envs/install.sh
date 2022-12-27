@@ -1,1 +1,0 @@
-conda env create -f tf_gpu_cudatk_10.yml
