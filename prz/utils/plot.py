@@ -5,8 +5,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 COLOR_SCHEMA_DEFAULT = ['green', 'red', 'blue']
-COLOR_SCHEMA_LIGHT = ['#FDD6D3', '#B3EAC3', '#D0E1FF']
-COLOR_SCHEMA_DARK = ['#2171B5', '#6BAED6', '#08306B']
+COLOR_SCHEMA_LIGHT_RGB = ['#FDD6D3', '#B3EAC3', '#D0E1FF']
+COLOR_SCHEMA_BLUE = ['#2171B5', '#6BAED6', '#08306B']
 
 def plot_history(history: dict, out_path: str, save_df: bool=True):
     #taken from: https://machinelearningmastery.com/display-deep-learning-model-training-history-in-keras/
@@ -38,9 +38,9 @@ def plot_acc_comparison(
         data: dict,
         out_path: str,
         labels: list,
-        width: float = 0.84,
+        width: float = 0.88,
         data_keys: list = ['CGE', 'CNE', 'MRG'],
-        colors: list = COLOR_SCHEMA_LIGHT,
+        colors: list = COLOR_SCHEMA_LIGHT_RGB,
         ylabel: str = 'Animal',
         xlabel: str = 'Acurácia'):
     data_keys_len = len(data_keys)
@@ -63,9 +63,9 @@ def plot_acc_comparison(
     for container in ax2.containers:
         ax2.bar_label(
             container,
-            padding=-20,
+            padding=-24,
             fmt='%.3f',
-            fontsize=6,
+            fontsize=8,
             color='black')
     
     ax2.grid(axis='x', linestyle='--')
